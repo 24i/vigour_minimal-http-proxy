@@ -1,6 +1,6 @@
 'use strict'
 var http = require('http')
-const proxy = require('./get/proxy')
+const proxy = require('./')
 
 module.exports = function start (port) {
   http.createServer(function (req, res) {
@@ -13,5 +13,5 @@ module.exports = function start (port) {
         console.log('haha!')
       })
     })
-  }).listen(8888)
+  }).listen(port || 8888)
 }
