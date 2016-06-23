@@ -2,16 +2,21 @@
 var http = require('http')
 const proxy = require('./')
 
-module.exports = function start (port) {
-  http.createServer(function (req, res) {
-    var str = ''
-    req.on('data', function (data) {
-      str += data
-    })
-    req.on('end', function () {
-      proxy(JSON.parse(str), res, () => {
-        console.log('haha!')
+module.exports = function createProxy (port) {
+  console.log('start proxy:', port)
+  return http.createServer((req, res) => {
+    var payload = ''
+    req.on('data', (data) => { payload += data })
+    req.on('end', () => {
+      const options = req.headers.proxy ? JSON.parse(req.headers.proxy) : {}
+      const realReq = proxy(options, () => {}, res)
+      if (payload) { realReq.write(payload) }
+      realReq.on('error', (err) => {
+        res.statusCode = 500
+        res.statusMessage = JSON.stringify({ error: err.message, options: options })
+        res.end()
       })
+      realReq.end()
     })
-  }).listen(port || 8888)
+  }).listen(port || 8080)
 }
