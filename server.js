@@ -3,7 +3,7 @@ var http = require('http')
 const proxy = require('./')
 
 module.exports = function createProxy (port) {
-  console.log('start proxy:', port)
+  console.log('minimal-http-proxy', port)
   return http.createServer((req, res) => {
     var payload = ''
     req.on('data', (data) => { payload += data })

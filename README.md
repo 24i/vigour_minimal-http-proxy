@@ -8,6 +8,12 @@
 
 <!-- VDOC END -->
 
+### Install
+`npm install`
+
+### Usage
+`npm start [PORT]`
+
 ```javascript
  // mimics the request object, but trough a proxy
  const proxyServer = createProxyServer(8888)
