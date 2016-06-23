@@ -26,10 +26,7 @@
     "url": "git+https://github.com/vigour-io/minimal-http-proxy.git"
   },
   "keywords": [
-    "observable",
-    "mem",
-    "vigour",
-    "base"
+    "proxy", "http", "request"
   ],
   "author": "jim de beer",
   "license": "ISC",
