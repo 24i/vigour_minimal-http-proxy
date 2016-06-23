@@ -15,9 +15,11 @@
 `npm start [PORT]`
 
 ```javascript
- // request, but trough a proxy
- const proxyServer = createProxyServer(8888)
-  const req = proxy({
+  const createProxyServer = require('minimal-http-proxy/server')
+  const proxyRequest = require('minimal-http-proxy')
+  // request, but trough a proxy
+  const proxyServer = createProxyServer(8888)
+  const req = proxyRequest({
     // options that will be send to the proxy server
     hostname: 'localhost',
     port: 9090,
