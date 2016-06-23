@@ -18,5 +18,5 @@ module.exports = function createProxy (port) {
       })
       realReq.end()
     })
-  }).listen(port || 8080)
+  }).listen(port)
 }
