@@ -9,7 +9,7 @@
 <!-- VDOC END -->
 
 ```javascript
- // mimics the request object, but trough a proxy
+ // request, but trough a proxy
  const proxyServer = createProxyServer(8888)
   const req = proxy({
     // options that will be send to the proxy server
