@@ -3,6 +3,7 @@ const test = require('tape')
 const proxy = require('../')
 const createProxyServer = require('../server')
 const http = require('http')
+const pckg = require('../package.json')
 
 function createOrigin () {
   return http.createServer((req, res) => {
@@ -121,6 +122,22 @@ test('proxy request error forwarding', (t) => {
     })
   })
   errorReq.end()
+})
+
+test('proxy request error forwarding', (t) => {
+  t.plan(1)
+  const proxyServer = createProxyServer(8888)
+  http.request({
+    hostname: 'localhost',
+    port: 8888
+  }, (res) => {
+    var str = ''
+    res.on('data', (chunk) => { str += chunk })
+    res.on('end', () => {
+      t.equal(str, 'minimal-http-proxy ' + pckg.version, 'return minimal-http-proxy on normal requests')
+      proxyServer.close()
+    })
+  }).end()
 })
 
 test('proxy request over https', (t) => {

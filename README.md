@@ -24,8 +24,10 @@
     hostname: 'localhost',
     port: 9090,
     method: 'POST',
+    protocol: 'https', // make request over https (optional)
     proxy: {
       // all proxy specific options
+      protocol: 'https', // make request over https
       hostname: 'localhost',
       port: 8888,
       method: 'POST'
