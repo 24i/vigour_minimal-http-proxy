@@ -7,21 +7,20 @@ module.exports = function proxy (options, cb, proxyRes) {
     const proxyOptions = options.proxy
     const protocol = proxyOptions.protocol
     delete options.proxy
-    return (protocol === 'https' ? https : http).request({
+    const req = (protocol === 'https' ? https : http).request({
       hostname: proxyOptions.hostname,
       port: proxyOptions.port,
       method: proxyOptions.method || 'GET',
+      withCredentials: false,
       headers: {
         proxy: JSON.stringify(options)
       }
     }, cb)
+    return req
   } else {
     const protocol = options.protocol
-    delete options.proxy
     return (protocol === 'https' ? https : http).request(options, (res) => {
-      proxyRes.setHeader('Access-Control-Allow-Origin', '*')
-      res.on('data', (chunk) => proxyRes.write(chunk))
-      res.on('end', (chunk) => proxyRes.end())
+      res.pipe(proxyRes)
     })
   }
 }

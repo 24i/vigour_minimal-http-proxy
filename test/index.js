@@ -123,7 +123,23 @@ test('proxy request error forwarding', (t) => {
   errorReq.end()
 })
 
-test('proxy request POST over https', (t) => {
+test('proxy request no proxy header error', (t) => {
+  t.plan(2)
+  const proxyServer = createProxyServer(8888)
+  http.request({
+    host: 'localhost',
+    port: 8888
+  }, (res) => {
+    res.on('data', () => {})
+    res.on('end', () => {
+      t.equal(res.statusCode, 500, '500 statuscode')
+      t.equal(res.statusMessage, 'no proxy header passed', 'correct errorMessage')
+      proxyServer.close()
+    })
+  }).end()
+})
+
+test('proxy request over https', (t) => {
   t.plan(1)
   const req = proxy({
     hostname: 'google.com',
