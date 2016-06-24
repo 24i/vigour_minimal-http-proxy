@@ -1,11 +1,13 @@
 'use strict'
-var http = require('http')
+const http = require('http')
+const https = require('https')
 
 module.exports = function proxy (options, cb, proxyRes) {
   if (options.proxy) {
     const proxyOptions = options.proxy
+    const protocol = proxyOptions.protocol
     delete options.proxy
-    return http.request({
+    return (protocol === 'https' ? https : http).request({
       hostname: proxyOptions.hostname,
       port: proxyOptions.port,
       method: proxyOptions.method || 'GET',
@@ -14,7 +16,9 @@ module.exports = function proxy (options, cb, proxyRes) {
       }
     }, cb)
   } else {
-    return http.request(options, (res) => {
+    const protocol = options.protocol
+    delete options.proxy
+    return (protocol === 'https' ? https : http).request(options, (res) => {
       proxyRes.setHeader('Access-Control-Allow-Origin', '*')
       res.pipe(proxyRes)
     })

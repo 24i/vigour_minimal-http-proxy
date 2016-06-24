@@ -122,3 +122,24 @@ test('proxy request error forwarding', (t) => {
   })
   errorReq.end()
 })
+
+test('proxy request POST over https', (t) => {
+  t.plan(1)
+  const req = proxy({
+    hostname: 'google.com',
+    port: 80,
+    method: 'GET',
+    proxy: {
+      hostname: 'minimal-http-proxy-edrrdbajei.now.sh',
+      method: 'POST',
+      protocol: 'https'
+    }
+  }, (res) => {
+    var str = ''
+    res.on('data', (chunk) => { str += chunk })
+    res.on('end', () => {
+      t.equal(!!str, true, 'returns data')
+    })
+  })
+  req.end()
+})
