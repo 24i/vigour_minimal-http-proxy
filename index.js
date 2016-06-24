@@ -16,7 +16,6 @@ module.exports = function proxy (options, cb, proxyRes) {
         proxy: JSON.stringify(options)
       }
     }, cb)
-    console.log('!?')
     return req
   } else {
     const protocol = options.protocol
