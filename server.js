@@ -30,7 +30,6 @@ module.exports = function createProxy (port) {
         })
         realReq.end()
       } else {
-        // res.writeHead(500, 'no proxy header passed', { 'content-type': 'text/plain' })
         res.end('minimal-http-proxy ' + pckg.version)
       }
     })
