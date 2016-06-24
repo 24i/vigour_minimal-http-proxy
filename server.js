@@ -1,6 +1,7 @@
 'use strict'
-var http = require('http')
+const http = require('http')
 const proxy = require('./')
+const pckg = require('./package.json')
 
 module.exports = function createProxy (port) {
   console.log('minimal-http-proxy', port)
@@ -19,7 +20,9 @@ module.exports = function createProxy (port) {
         })
         realReq.end()
       } else {
-        res.end('minimal-http-proxy')
+        res.statusCode = 500
+        res.statusMessage = 'no payload passed'
+        res.end('minimal-http-proxy ' + pckg.version)
       }
     })
   }).listen(port)
