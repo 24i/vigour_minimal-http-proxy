@@ -75,7 +75,6 @@ test('proxy request POST', (t) => {
       cnt++
     })
     res.on('end', () => {
-      console.log(res.headers)
       t.equal(res.headers.hello, 'haha', 'correct headers from origin get passed')
       t.equal(cnt, 10, 'received in 10 chunks')
       t.equal(data, '1!2!3!4!5!6!7!8!9!10!', 'correct final response, recieves payload')
