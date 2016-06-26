@@ -20,6 +20,9 @@ module.exports = function proxy (options, cb, proxyRes) {
   } else {
     const protocol = options.protocol
     return (protocol === 'https' ? https : http).request(options, (res) => {
+      for (let key in res.headers) {
+        proxyRes.setHeader(key, res.headers[key])
+      }
       res.pipe(proxyRes)
     })
   }

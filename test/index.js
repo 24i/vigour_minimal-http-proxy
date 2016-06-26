@@ -9,6 +9,7 @@ function createOrigin () {
   return http.createServer((req, res) => {
     var cnt = 0
     var payload = ''
+    res.writeHead(200, 'OK', { hello: 'haha' })
     req.on('data', (chunk) => { payload += chunk })
     req.on('end', send)
     function send () {
@@ -54,7 +55,7 @@ test('proxy request GET', (t) => {
 })
 
 test('proxy request POST', (t) => {
-  t.plan(2)
+  t.plan(3)
   const server = createOrigin()
   const proxyServer = createProxyServer(8888)
   const req = proxy({
@@ -74,6 +75,8 @@ test('proxy request POST', (t) => {
       cnt++
     })
     res.on('end', () => {
+      console.log(res.headers)
+      t.equal(res.headers.hello, 'haha', 'correct headers from origin get passed')
       t.equal(cnt, 10, 'received in 10 chunks')
       t.equal(data, '1!2!3!4!5!6!7!8!9!10!', 'correct final response, recieves payload')
       server.close()

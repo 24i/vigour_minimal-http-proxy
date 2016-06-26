@@ -7,13 +7,22 @@ module.exports = function createProxy (port) {
   console.log('minimal-http-proxy', port)
   return http.createServer((req, res) => {
     var payload = ''
-    res.writeHead(200, {
-      'Content-Type': 'text/plain',
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,OPTIONS',
-      'Access-Control-Allow-Headers': 'proxy',
-      'Accept': '*/*'
-    })
+    // res.writeHead(200, 'OK', {
+    //   'Content-Type': 'text/plain',
+    //   'Access-Control-Allow-Origin': '*',
+    //   'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,OPTIONS',
+    //   'Access-Control-Allow-Headers': 'proxy',
+    //   'Accept': '*/*'
+    // })
+
+    res.statusCode = 200
+    res.statusMessage = 'OK'
+    res.setHeader('Content-Type', 'text/plain')
+    res.setHeader('Access-Control-Allow-Origin', '*')
+    res.setHeader('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+    res.setHeader('Access-Control-Allow-Headers', 'proxy')
+    res.setHeader('Accept', '*/*')
+
     req.on('data', (data) => { payload += data })
     req.on('end', () => {
       const options = req.headers.proxy ? JSON.parse(req.headers.proxy) : false
