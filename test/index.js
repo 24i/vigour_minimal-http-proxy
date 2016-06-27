@@ -5,11 +5,11 @@ const createProxyServer = require('../server')
 const http = require('http')
 const pckg = require('../package.json')
 
-function createOrigin () {
+function createOrigin (statusCode, message) {
   return http.createServer((req, res) => {
     var cnt = 0
     var payload = ''
-    res.writeHead(200, 'OK', { hello: 'haha' })
+    res.writeHead(statusCode || 200, message || 'OK', { hello: 'haha' })
     req.on('data', (chunk) => { payload += chunk })
     req.on('end', send)
     function send () {
@@ -83,6 +83,30 @@ test('proxy request POST', (t) => {
     })
   })
   req.write('!')
+  req.end()
+})
+
+test('proxy request statusCode response', (t) => {
+  t.plan(2)
+  const statusCode = 500
+  const statusMessage = 'nasty server error'
+  const server = createOrigin(statusCode, statusMessage)
+  const proxyServer = createProxyServer(8888)
+  const req = proxy({
+    hostname: 'localhost',
+    port: 9090,
+    method: 'GET',
+    proxy: {
+      hostname: 'localhost',
+      port: 8888,
+      method: 'GET'
+    }
+  }, (res) => {
+    t.equal(res.statusCode, 500, 'proxy should forward the statusCode')
+    t.equal(res.statusMessage, 'nasty server error')
+    server.close()
+    proxyServer.close()
+  })
   req.end()
 })
 

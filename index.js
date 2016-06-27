@@ -23,6 +23,8 @@ module.exports = function proxy (options, cb, proxyRes) {
       for (let key in res.headers) {
         proxyRes.setHeader(key, res.headers[key])
       }
+      proxyRes.statusCode = res.statusCode
+      proxyRes.statusMessage = res.statusMessage
       res.pipe(proxyRes)
     })
   }

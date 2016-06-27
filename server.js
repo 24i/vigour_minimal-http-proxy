@@ -7,16 +7,7 @@ module.exports = function createProxy (port) {
   console.log('minimal-http-proxy', port)
   return http.createServer((req, res) => {
     var payload = ''
-    // res.writeHead(200, 'OK', {
-    //   'Content-Type': 'text/plain',
-    //   'Access-Control-Allow-Origin': '*',
-    //   'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,OPTIONS',
-    //   'Access-Control-Allow-Headers': 'proxy',
-    //   'Accept': '*/*'
-    // })
 
-    res.statusCode = 200
-    res.statusMessage = 'OK'
     res.setHeader('Content-Type', 'text/plain')
     res.setHeader('Access-Control-Allow-Origin', '*')
     res.setHeader('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
@@ -39,6 +30,7 @@ module.exports = function createProxy (port) {
         })
         realReq.end()
       } else {
+        res.writeHead(200, 'OK')
         res.end('minimal-http-proxy ' + pckg.version)
       }
     })
