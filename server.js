@@ -15,8 +15,8 @@ module.exports = function createProxy (port) {
     //   'Accept': '*/*'
     // })
 
-    res.statusCode = 200
-    res.statusMessage = 'OK'
+    // res.statusCode = 200
+    // res.statusMessage = 'OK'
     res.setHeader('Content-Type', 'text/plain')
     res.setHeader('Access-Control-Allow-Origin', '*')
     res.setHeader('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
