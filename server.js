@@ -30,6 +30,7 @@ module.exports = function createProxy (port) {
         })
         realReq.end()
       } else {
+        res.writeHead(200, 'OK')
         res.end('minimal-http-proxy ' + pckg.version)
       }
     })
