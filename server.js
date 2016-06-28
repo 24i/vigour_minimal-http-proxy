@@ -3,17 +3,15 @@ const http = require('http')
 const proxy = require('./')
 const pckg = require('./package.json')
 
-module.exports = function createProxy (port) {
+module.exports = function createProxy (port, secret) {
   console.log('minimal-http-proxy', port)
   return http.createServer((req, res) => {
     var payload = ''
-
     res.setHeader('Content-Type', 'text/plain')
     res.setHeader('Access-Control-Allow-Origin', '*')
     res.setHeader('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
     res.setHeader('Access-Control-Allow-Headers', 'proxy')
     res.setHeader('Accept', '*/*')
-
     req.on('data', (data) => { payload += data })
     req.on('end', () => {
       const options = req.headers.proxy ? JSON.parse(req.headers.proxy) : false

@@ -173,7 +173,7 @@ test('proxy request over https', (t) => {
     protocol: 'https',
     method: 'GET',
     proxy: {
-      hostname: 'minimal-http-proxy-edrrdbajei.now.sh',
+      hostname: 'minimal-http-proxy-vvivarnrei.now.sh',
       method: 'POST',
       protocol: 'https'
     }

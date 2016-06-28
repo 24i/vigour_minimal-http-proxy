@@ -2,4 +2,5 @@
 'use strict'
 const createServer = require('../server')
 const port = process.argv[2] || 80
-createServer(port)
+const secret = process.argv[3]
+createServer(port, secret)
