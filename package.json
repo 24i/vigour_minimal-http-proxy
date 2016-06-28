@@ -1,6 +1,6 @@
 {
   "name": "minimal-http-proxy",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Very simple proxy server to bypass accept allow origin rules",
   "main": "index.js",
   "scripts": {
