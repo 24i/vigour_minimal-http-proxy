@@ -170,7 +170,7 @@ test('proxy request over https', (t) => {
   t.plan(1)
   const req = proxy({
     hostname: 'google.com',
-    port: 80,
+    protocol: 'https',
     method: 'GET',
     proxy: {
       hostname: 'minimal-http-proxy-edrrdbajei.now.sh',
