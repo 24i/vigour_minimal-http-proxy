@@ -47,11 +47,11 @@
   req.end()
 ```
 
-As a url (simple)
+As a query parameter (basic)
 
 `proxy.url.com?proxy=http://google.com`
 
-As a url with options
+As a query parameter with options
 
 `proxy.url.com?proxy={ "host": "google.com", "headers": { "lulz": tue } }`
 
