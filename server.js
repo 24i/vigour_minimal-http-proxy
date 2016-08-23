@@ -4,6 +4,7 @@ const proxy = require('./')
 const pckg = require('./package.json')
 const url = require('url')
 const querystring = require('querystring')
+const isUrl = require('is-url')
 
 module.exports = function createProxy (port, secret) {
   console.log('minimal-http-proxy', port)
@@ -23,11 +24,21 @@ module.exports = function createProxy (port, secret) {
         const q = querystring.parse(parsed.query)
         if (q) {
           if (q.proxy) {
-            try {
-              options = JSON.parse(q.proxy)
-            } catch (e) {
-              res.end('wrong json: ' + q.proxy)
-              return
+            if (isUrl(q.proxy)) {
+              const p = url.parse(q.proxy)
+              options = {
+                protocol: p.protocol,
+                port: p.port || p.protocol === 'https' ? 443 : 80,
+                host: p.host,
+                path: p.path
+              }
+            } else {
+              try {
+                options = JSON.parse(q.proxy)
+              } catch (e) {
+                res.end('wrong json: ' + q.proxy)
+                return
+              }
             }
           }
         }
