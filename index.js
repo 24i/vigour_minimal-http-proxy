@@ -22,7 +22,9 @@ module.exports = function proxy (options, cb, proxyRes) {
     delete options.protocol
     return (protocol === 'https' ? https : http).request(options, (res) => {
       for (let key in res.headers) {
-        proxyRes.setHeader(key, res.headers[key])
+        if (!/^access/.test(key)) {
+          proxyRes.setHeader(key, res.headers[key])
+        }
       }
       proxyRes.statusCode = res.statusCode
       proxyRes.statusMessage = res.statusMessage
