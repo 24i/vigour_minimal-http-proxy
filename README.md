@@ -48,9 +48,11 @@
 ```
 
 As a url (simple)
+
 `proxy.url.com?proxy=http://google.com`
 
 As a url with options
+
 `proxy.url.com?proxy={ "host": "google.com", "headers": { "lulz": tue } }`
 
 
