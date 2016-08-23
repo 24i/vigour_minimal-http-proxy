@@ -54,6 +54,32 @@ test('proxy request GET', (t) => {
   req.end()
 })
 
+test('proxy request GET as a queryparameter', (t) => {
+  t.plan(2)
+  const server = createOrigin()
+  const proxyServer = createProxyServer(8888)
+  const req = http.request({
+    hostname: 'localhost',
+    port: 9090,
+    method: 'GET',
+    path: '/?proxy=localhost:8888'
+  }, (res) => {
+    var data = ''
+    var cnt = 0
+    res.on('data', (chunk) => {
+      data += chunk
+      cnt++
+    })
+    res.on('end', () => {
+      t.equal(cnt, 10, 'received in 10 chunks')
+      t.equal(data, '12345678910', 'correct final response')
+      server.close()
+      proxyServer.close()
+    })
+  })
+  req.end()
+})
+
 test('proxy request POST', (t) => {
   t.plan(3)
   const server = createOrigin()
