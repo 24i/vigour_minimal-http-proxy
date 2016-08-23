@@ -2,6 +2,8 @@
 const http = require('http')
 const proxy = require('./')
 const pckg = require('./package.json')
+const url = require('url')
+const querystring = require('querystring')
 
 module.exports = function createProxy (port, secret) {
   console.log('minimal-http-proxy', port)
@@ -14,7 +16,23 @@ module.exports = function createProxy (port, secret) {
     res.setHeader('Accept', '*/*')
     req.on('data', (data) => { payload += data })
     req.on('end', () => {
-      const options = req.headers.proxy ? JSON.parse(req.headers.proxy) : false
+      var options = req.headers.proxy ? JSON.parse(req.headers.proxy) : false
+
+      if (!options) {
+        const parsed = url.parse(req.url)
+        const q = querystring.parse(parsed.query)
+        if (q) {
+          if (q.proxy) {
+            try {
+              options = JSON.parse(q.proxy)
+            } catch (e) {
+              res.end('wrong json: ' + q.proxy)
+              return
+            }
+          }
+        }
+      }
+
       if (options) {
         const realReq = proxy(options, () => {}, res)
         if (payload) { realReq.write(payload) }
