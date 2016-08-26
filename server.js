@@ -18,7 +18,8 @@ module.exports = function createProxy (port, secret, fn) {
     res.setHeader('Content-Type', 'text/plain')
     res.setHeader('Access-Control-Allow-Origin', '*')
     res.setHeader('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
-    res.setHeader('Access-Control-Allow-Headers', 'proxy')
+    res.setHeader('Access-Control-Allow-Headers', 'Origin, Content-Type, Authorization, Accept, X-Request-With, proxy')
+    res.setHeader('Access-Control-Allow-Credentials', true)
     res.setHeader('Accept', '*/*')
     req.on('data', (data) => { payload += data })
     req.on('end', () => {
