@@ -6,9 +6,10 @@ const url = require('url')
 const querystring = require('querystring')
 const isUrl = require('is-url')
 
-module.exports = function createProxy (port, secret) {
+module.exports = function createProxy (port, secret, fn) {
   console.log('minimal-http-proxy', port)
   return http.createServer((req, res) => {
+    if (fn) { fn(req, res) }
     var payload = ''
     res.setHeader('Content-Type', 'text/plain')
     res.setHeader('Access-Control-Allow-Origin', '*')
@@ -18,8 +19,8 @@ module.exports = function createProxy (port, secret) {
     req.on('data', (data) => { payload += data })
     req.on('end', () => {
       var options = req.headers.proxy ? JSON.parse(req.headers.proxy) : false
-
       if (!options) {
+        console.log(req.url)
         const parsed = url.parse(req.url)
         const q = querystring.parse(parsed.query)
         if (q) {
