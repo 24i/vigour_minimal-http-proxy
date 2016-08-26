@@ -20,7 +20,6 @@ module.exports = function createProxy (port, secret, fn) {
     req.on('end', () => {
       var options = req.headers.proxy ? JSON.parse(req.headers.proxy) : false
       if (!options) {
-        console.log(req.url)
         const parsed = url.parse(req.url)
         const q = querystring.parse(parsed.query)
         if (q) {
