@@ -7,7 +7,7 @@ module.exports = function proxy (options, cb, proxyRes) {
     const proxyOptions = options.proxy
     const protocol = proxyOptions.protocol
     delete options.proxy
-    const req = (protocol === 'https' ? https : http).request({
+    const requestOptions = {
       hostname: proxyOptions.hostname,
       port: proxyOptions.port,
       method: proxyOptions.method || 'GET',
@@ -15,7 +15,13 @@ module.exports = function proxy (options, cb, proxyRes) {
       headers: {
         proxy: JSON.stringify(options)
       }
-    }, cb)
+    }
+
+    if (proxyOptions.path) {
+      requestOptions.path = proxyOptions.path
+    }
+
+    const req = (protocol === 'https' ? https : http).request(requestOptions, cb)
     return req
   } else {
     const protocol = options.protocol

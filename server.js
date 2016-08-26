@@ -26,10 +26,15 @@ module.exports = function createProxy (port, secret) {
           if (q.proxy) {
             if (isUrl(q.proxy)) {
               const p = url.parse(q.proxy)
+              if (/^https/.test(p.protocol)) {
+                p.protocol = 'https'
+              } else if (/^http/.test(p.protocol)) {
+                p.protocol = 'http'
+              }
               options = {
                 protocol: p.protocol,
-                port: p.port || p.protocol === 'https' ? 443 : 80,
-                host: p.host,
+                port: p.port || (p.protocol === 'https' ? 443 : 80),
+                host: p.hostname,
                 path: p.path
               }
             } else {

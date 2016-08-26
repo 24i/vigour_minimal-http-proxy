@@ -60,9 +60,9 @@ test('proxy request GET as a queryparameter', (t) => {
   const proxyServer = createProxyServer(8888)
   const req = http.request({
     hostname: 'localhost',
-    port: 9090,
+    port: 8888,
     method: 'GET',
-    path: '/?proxy=localhost:8888'
+    path: '/?proxy=http://localhost:9090'
   }, (res) => {
     var data = ''
     var cnt = 0
@@ -73,6 +73,55 @@ test('proxy request GET as a queryparameter', (t) => {
     res.on('end', () => {
       t.equal(cnt, 10, 'received in 10 chunks')
       t.equal(data, '12345678910', 'correct final response')
+      server.close()
+      proxyServer.close()
+    })
+  })
+  req.end()
+})
+
+test('proxy request GET as qeuryparam with json', (t) => {
+  t.plan(2)
+  const server = createOrigin()
+  const proxyServer = createProxyServer(8888)
+  const req = http.request({
+    hostname: 'localhost',
+    port: 8888,
+    method: 'GET',
+    path: '/?proxy={"host":"localhost","port":"9090"}'
+  }, (res) => {
+    var data = ''
+    var cnt = 0
+    res.on('data', (chunk) => {
+      data += chunk
+      cnt++
+    })
+    res.on('end', () => {
+      t.equal(cnt, 10, 'received in 10 chunks')
+      t.equal(data, '12345678910', 'correct final response')
+      server.close()
+      proxyServer.close()
+    })
+  })
+  req.end()
+})
+
+test('proxy request GET as qeuryparam with wrong json - error', (t) => {
+  t.plan(1)
+  const server = createOrigin()
+  const proxyServer = createProxyServer(8888)
+  const req = http.request({
+    hostname: 'localhost',
+    port: 8888,
+    method: 'GET',
+    path: '/?proxy={haha}'
+  }, (res) => {
+    var data = ''
+    res.on('data', (chunk) => {
+      data += chunk
+    })
+    res.on('end', () => {
+      t.equal(data, 'wrong json: {haha}', 'correct error message')
       server.close()
       proxyServer.close()
     })
@@ -199,15 +248,35 @@ test('proxy request over https', (t) => {
     protocol: 'https',
     method: 'GET',
     proxy: {
-      hostname: 'minimal-http-proxy-vvivarnrei.now.sh',
+      hostname: 'proxy.vigour.io',
       method: 'POST',
-      protocol: 'https'
+      protocol: 'https',
+      path: '/?random=true'
     }
   }, (res) => {
     var str = ''
     res.on('data', (chunk) => { str += chunk })
     res.on('end', () => {
       t.equal(!!str, true, 'returns data')
+    })
+  })
+  req.end()
+})
+
+test('proxy request over https using qeuryparam', (t) => {
+  t.plan(1)
+  const proxyServer = createProxyServer(8888)
+  const req = http.request({
+    hostname: 'localhost',
+    port: 8888,
+    method: 'GET',
+    path: '/?proxy=https://google.com'
+  }, (res) => {
+    var str = ''
+    res.on('data', (chunk) => { str += chunk })
+    res.on('end', () => {
+      t.equal(!!str, true, 'returns data')
+      proxyServer.close()
     })
   })
   req.end()
