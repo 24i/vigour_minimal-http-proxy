@@ -108,6 +108,31 @@ test('proxy request GET as a queryparameter enhance request handler', (t) => {
   req.end()
 })
 
+test('proxy request GET as a queryparameter enhance request handler, block response', (t) => {
+  t.plan(1)
+  const server = createOrigin()
+  const proxyServer = createProxyServer(8888, false, (req, res) => {
+    return res.end('yo wrong')
+  })
+  const req = http.request({
+    hostname: 'localhost',
+    port: 8888,
+    method: 'GET',
+    path: '/?proxy=something'
+  }, (res) => {
+    var data = ''
+    res.on('data', (chunk) => {
+      data += chunk
+    })
+    res.on('end', () => {
+      t.equal(data, 'yo wrong', 'correct response')
+      server.close()
+      proxyServer.close()
+    })
+  })
+  req.end()
+})
+
 test('proxy request GET as qeuryparam with json', (t) => {
   t.plan(2)
   const server = createOrigin()

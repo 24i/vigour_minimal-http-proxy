@@ -9,7 +9,11 @@ const isUrl = require('is-url')
 module.exports = function createProxy (port, secret, fn) {
   console.log('minimal-http-proxy', port)
   return http.createServer((req, res) => {
-    if (fn) { fn(req, res) }
+    if (fn) {
+      if (fn(req, res)) {
+        return
+      }
+    }
     var payload = ''
     res.setHeader('Content-Type', 'text/plain')
     res.setHeader('Access-Control-Allow-Origin', '*')
