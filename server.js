@@ -6,7 +6,7 @@ const url = require('url')
 const querystring = require('querystring')
 const isUrl = require('is-url')
 
-module.exports = function createProxy (port, secret, fn) {
+module.exports = function createProxy (port, secret, fn, proxyfn) {
   console.log('minimal-http-proxy', port)
   return http.createServer((req, res) => {
     if (fn) {
@@ -55,7 +55,7 @@ module.exports = function createProxy (port, secret, fn) {
       }
 
       if (options) {
-        const realReq = proxy(options, () => {}, res)
+        const realReq = proxy(options, () => {}, res, proxyfn)
         if (payload) { realReq.write(payload) }
         realReq.on('error', (err) => {
           res.writeHead(

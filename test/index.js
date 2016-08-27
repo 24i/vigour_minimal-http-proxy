@@ -183,9 +183,11 @@ test('proxy request GET as qeuryparam with wrong json - error', (t) => {
 })
 
 test('proxy request POST', (t) => {
-  t.plan(3)
+  t.plan(4)
   const server = createOrigin()
-  const proxyServer = createProxyServer(8888)
+  const proxyServer = createProxyServer(8888, false, false, () => {
+    t.ok(true, 'fires proxy middleware')
+  })
   const req = proxy({
     hostname: 'localhost',
     port: 9090,

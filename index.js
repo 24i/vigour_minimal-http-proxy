@@ -2,7 +2,7 @@
 const http = require('http')
 const https = require('https')
 
-module.exports = function proxy (options, cb, proxyRes) {
+module.exports = function proxy (options, cb, proxyRes, proxyfn) {
   if (options.proxy) {
     const proxyOptions = options.proxy
     const protocol = proxyOptions.protocol
@@ -34,7 +34,13 @@ module.exports = function proxy (options, cb, proxyRes) {
       }
       proxyRes.statusCode = res.statusCode
       proxyRes.statusMessage = res.statusMessage
-      res.pipe(proxyRes)
+      if (proxyfn) {
+        if (!proxyfn(res, proxyRes)) {
+          res.pipe(proxyRes)
+        }
+      } else {
+        res.pipe(proxyRes)
+      }
     })
   }
 }
