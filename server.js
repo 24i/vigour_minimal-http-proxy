@@ -14,7 +14,9 @@ module.exports = function createProxy (port, secret, fn, proxyfn) {
       if (ret) {
         if (ret instanceof Promise) {
           ret
-          .then(proceed)
+          .then((data) => {
+            if (!data) { proceed() }
+          })
           .catch((err) => {
             res.writeHead(
               500,
