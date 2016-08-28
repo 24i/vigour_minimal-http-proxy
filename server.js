@@ -56,7 +56,6 @@ module.exports = function createProxy (port, secret, fn, proxyfn) {
             }
           }
           if (/(.*?)proxy=/.test(parsed.pathname)) {
-            console.log('yo yo yo')
             const path = decodeURIComponent(parsed.pathname.replace(/(.*?)proxy=/, ''))
             options = proxyUrl(path, res)
             if (!options) {
