@@ -49,27 +49,17 @@ module.exports = function createProxy (port, secret, fn, proxyfn) {
           const q = querystring.parse(parsed.query)
           if (q) {
             if (q.proxy) {
-              if (isUrl(q.proxy)) {
-                const p = url.parse(q.proxy)
-                if (/^https/.test(p.protocol)) {
-                  p.protocol = 'https'
-                } else if (/^http/.test(p.protocol)) {
-                  p.protocol = 'http'
-                }
-                options = {
-                  protocol: p.protocol,
-                  port: p.port || (p.protocol === 'https' ? 443 : 80),
-                  host: p.hostname,
-                  path: p.path
-                }
-              } else {
-                try {
-                  options = JSON.parse(q.proxy)
-                } catch (e) {
-                  res.end('wrong json: ' + q.proxy)
-                  return
-                }
+              options = proxyUrl(q.proxy, res)
+              if (!options) {
+                return
               }
+            }
+          }
+          if (/^\/proxy=/.test(parsed.pathname)) {
+            const path = decodeURIComponent(parsed.pathname.replace('/proxy=', ''))
+            options = proxyUrl(path, res)
+            if (!options) {
+              return
             }
           }
         }
@@ -92,4 +82,30 @@ module.exports = function createProxy (port, secret, fn, proxyfn) {
       })
     }
   }).listen(port)
+}
+
+function proxyUrl (proxy, res) {
+  var options
+  if (isUrl(proxy)) {
+    const p = url.parse(proxy)
+    if (/^https/.test(p.protocol)) {
+      p.protocol = 'https'
+    } else if (/^http/.test(p.protocol)) {
+      p.protocol = 'http'
+    }
+    options = {
+      protocol: p.protocol,
+      port: p.port || (p.protocol === 'https' ? 443 : 80),
+      host: p.hostname,
+      path: p.path
+    }
+  } else {
+    try {
+      options = JSON.parse(proxy)
+    } catch (e) {
+      res.end('wrong json: ' + proxy)
+      return false
+    }
+  }
+  return options
 }

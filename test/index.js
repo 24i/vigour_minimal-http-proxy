@@ -80,6 +80,32 @@ test('proxy request GET as a queryparameter', (t) => {
   req.end()
 })
 
+test('proxy request GET in path', (t) => {
+  t.plan(2)
+  const server = createOrigin()
+  const proxyServer = createProxyServer(8888)
+  const req = http.request({
+    hostname: 'localhost',
+    port: 8888,
+    method: 'GET',
+    path: '/proxy=' + encodeURIComponent('http://localhost:9090')
+  }, (res) => {
+    var data = ''
+    var cnt = 0
+    res.on('data', (chunk) => {
+      data += chunk
+      cnt++
+    })
+    res.on('end', () => {
+      t.equal(cnt, 10, 'received in 10 chunks')
+      t.equal(data, '12345678910', 'correct final response')
+      server.close()
+      proxyServer.close()
+    })
+  })
+  req.end()
+})
+
 test('proxy request GET as a queryparameter enhance request handler', (t) => {
   t.plan(2)
   const server = createOrigin()
